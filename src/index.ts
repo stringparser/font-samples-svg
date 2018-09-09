@@ -13,6 +13,19 @@ type fontResolveValue = {
   basename: string;
 };
 
+function getFontFullName(input: string) {
+  const [name, weight] = input.match(/^([^-]+)-(\d{3})(-\d{1,2})?$/).slice(1);
+  return [
+    name,
+    (weight === '300' ? 'light' : '') ||
+    (weight === '400' ? 'regular' : '') ||
+    (weight === '500' ? 'medium' : '') ||
+    (weight === '600' ? 'semi-bold' : '') ||
+    (weight === '700' ? 'bold' : '') ||
+    (weight === '900' ? 'black' : '')
+  ].filter(v => v).join('-');
+}
+
 async function loadFonts(fontName: string): Promise<fontResolveValue[]> {
   type Reject = (error: Error) => void;
   type Resolve = (fontValue: fontResolveValue[]) => void;
@@ -40,10 +53,10 @@ async function loadFonts(fontName: string): Promise<fontResolveValue[]> {
         fonts.push({
           font,
           basename,
-          variant: basename
+          variant: getFontFullName(basename
             .split('.')[0] // cleanup extension
             .replace(/[_]/g, ' ') // undo snake case (get-google-fonts)
-          ,
+          ),
         });
 
         if (fonts.length === fontVariants.length) {
@@ -57,9 +70,9 @@ async function loadFonts(fontName: string): Promise<fontResolveValue[]> {
 (async function (fontName) {
   const fonts = await loadFonts(fontName);
 
-  fonts.forEach(async ({ font, variant, basename }) => {
-    const path = font.getPath(variant, 0, 100, 72);
-    const svgFileName = `./dist/${basename.replace(/\.[^.]+$/, '')}.svg`;
+  fonts.forEach(async ({ font, variant }) => {
+    const path = font.getPath(variant.replace(/[-_]+/g, ' '), 0, 100, 72);
+    const svgFileName = `./dist/${variant.replace(/\s+/g, '_')}.svg`;
     const { x1, x2, y1, y2 }: any = path.getBoundingBox();
 
     const svgPath = path.toSVG(2);
@@ -78,4 +91,4 @@ async function loadFonts(fontName: string): Promise<fontResolveValue[]> {
 
     await writeFile(svgFileName, svgFileContents);
   });
-})('Roboto');
+})('Montserrat');
