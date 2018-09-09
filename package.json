@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/scripts/svg-gen.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -rf dist && mkdir dist"
+    "clean": "rm -rf dist && mkdir dist",
+    "build:svg-gen": "ts-node --project tsconfig.json src/scripts/svg-gen.ts"
   },
   "keywords": [
     "svg",

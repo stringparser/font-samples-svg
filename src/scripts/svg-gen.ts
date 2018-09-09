@@ -11,6 +11,9 @@ const writeFile = util.promisify(fs.writeFile);
 (async function () {
   const googleFonts = await getGoogleFontsList();
 
+  let count = { done: 0 };
+  console.log('total fonts', googleFonts.length);
+
   googleFonts.forEach(async (googleFont) => {
     try {
       const res = await fetch(googleFont.fileURL);
@@ -36,9 +39,15 @@ const writeFile = util.promisify(fs.writeFile);
         svgFileContents
       );
 
+      console.log('wrote %s progress %s%',
+        googleFont.fullName,
+        Math.round(++count.done * 100 / googleFonts.length)
+      );
+
     } catch (error) {
       console.log(googleFont);
       console.log(error);
+      ++count.done;
     }
   });
 })();
