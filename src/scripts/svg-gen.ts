@@ -18,19 +18,17 @@ const writeFile = util.promisify(fs.writeFile);
     try {
       const res = await fetch(googleFont.fileURL);
       const contents = await res.arrayBuffer();
+      const openTypeFont = opentype.parse(contents);
 
-      const font = opentype.parse(contents);
-
-      const svgText = googleFont.fullName.replace(/\-/g, ' ');
-      const openTypePath = font.getPath(svgText, 0, 100, 72);
+      const fontText = googleFont.family.replace(/\-/g, ' ');
+      const openTypePath = openTypeFont.getPath(fontText, 0, 0, 10);
       const { x1, x2, y1, y2 }: any = openTypePath.getBoundingBox();
 
-      const svgPath = openTypePath.toSVG(0);
-      const svgViewBox = [x1, y1, Math.abs(x1 - x2), Math.abs(y1 - y2)].join(' ');
+      const svgViewBox = `${x1} ${y1} ${Math.abs(x1 - x2)} ${Math.abs(y1 - y2)}`;
 
       const svgFileContents = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="${svgViewBox}">
-          ${svgPath}
+          ${openTypePath.toSVG(2)}
         </svg>
       `.replace(/^\s+|\n/gm, '');
 
@@ -51,8 +49,3 @@ const writeFile = util.promisify(fs.writeFile);
     }
   });
 })();
-
-process.on('unhandledRejection', (reason) => {
-  console.log('Unhandled Rejection at:', reason.stack || reason);
-  process.exit(1);
-});
