@@ -25,7 +25,7 @@ const writeFile = util.promisify(fs.writeFile);
       const openTypePath = font.getPath(svgText, 0, 100, 72);
       const { x1, x2, y1, y2 }: any = openTypePath.getBoundingBox();
 
-      const svgPath = openTypePath.toSVG(2);
+      const svgPath = openTypePath.toSVG(0);
       const svgViewBox = [x1, y1, Math.abs(x1 - x2), Math.abs(y1 - y2)].join(' ');
 
       const svgFileContents = `
