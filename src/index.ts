@@ -22,16 +22,12 @@ async function loadFonts(fontName: string): Promise<fontResolveValue[]> {
 
     await new GetGoogleFonts().download(fontURL, {
       outputDir,
-      userAgent: 'curl'
+      userAgent: 'curl' // opentype does not support woff2
     });
 
     const fontRE = new RegExp(`^${fontName.replace(/\s+/g, '_')}[^.]+\.(woff|ttf|otf)`, 'i');
     const fontPaths = await readDir(outputDir);
     const fontVariants = fontPaths.filter(el => fontRE.test(el));
-
-    console.log(fontRE);
-    console.log(fontName);
-    console.log('fontVariants', fontVariants)
 
     const fonts: fontResolveValue[] = [];
 
@@ -60,10 +56,22 @@ async function loadFonts(fontName: string): Promise<fontResolveValue[]> {
 
   fonts.forEach(async ({ font, variant, basename }) => {
     const path = font.getPath(variant, 0, 100, 72);
-    const { x1, y1, x2, y2 }: any = path.getBoundingBox();
-
     const svgFileName = `./dist/${basename.replace(/\.[^.]+$/, '')}.svg`;
-    const svgFileContents = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${x1} ${y1} ${x2} ${y2}">${path.toSVG(2)}</svg>`
+    const { x1, x2, y1, y2 }: any = path.getBoundingBox();
+
+    const svgPath = path.toSVG(2);
+    const svgViewBox = [
+      x1,
+      y1,
+      Math.abs(x1 - x2),
+      Math.abs(y1 - y2),
+    ].join(' ');
+
+    const svgFileContents = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="${svgViewBox}">
+        ${svgPath}
+      </svg>
+    `.replace(/^\s+/gm, '');
 
     await writeFile(svgFileName, svgFileContents);
   });
