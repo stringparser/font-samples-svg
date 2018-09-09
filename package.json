@@ -4,9 +4,9 @@
   "description": "create font svg font samples",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon src/scripts/svg-gen.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -rf dist build && mkdir dist"
+    "clean": "rm -rf dist && mkdir dist"
   },
   "keywords": [
     "svg",
@@ -17,6 +17,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^10.9.4",
+    "@types/node-fetch": "^2.1.2",
     "@types/opentype.js": "^0.7.0",
     "nodemon": "^1.18.4",
     "ts-node": "^7.0.1",
@@ -24,7 +25,7 @@
     "typescript": "^3.0.3"
   },
   "dependencies": {
-    "get-google-fonts": "^1.1.1",
+    "node-fetch": "^2.2.0",
     "opentype.js": "^0.10.0"
   }
 }
