@@ -1,0 +1,29 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "es5",
+      "es2015",
+      "es2016",
+      "es2017",
+      "es2017.object",
+      "esnext"
+    ],
+    "jsx": "preserve",
+    "module": "commonjs",
+    "target": "es6",
+    "baseUrl": "src",
+    "allowJs": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "importHelpers": true,
+    "noUnusedLocals": true,
+    "removeComments": false,
+    "moduleResolution": "node",
+    "preserveConstEnums": true,
+    "noUnusedParameters": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true
+  }
+}
