@@ -18,14 +18,14 @@ async function loadFonts(fontName: string): Promise<fontResolveValue[]> {
   type Resolve = (fontValue: fontResolveValue[]) => void;
 
   return new Promise(async function (resolve: Resolve, reject: Reject) {
-    const fontURL = `https://fonts.googleapis.com/css?family=${fontName.replace(/\s+/g, '+')}:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese`;
+    const fontURL = `https://fonts.googleapis.com/css?family=${fontName.replace(/\s+/g, '+')}`;
 
     await new GetGoogleFonts().download(fontURL, {
       outputDir,
       userAgent: 'curl' // opentype does not support woff2
     });
 
-    const fontRE = new RegExp(`^${fontName.replace(/\s+/g, '_')}[^.]+\.(woff|ttf|otf)`, 'i');
+    const fontRE = new RegExp(`^${fontName.replace(/\s+/g, '_')}[^.]*\.(woff|ttf|otf)`, 'i');
     const fontPaths = await readDir(outputDir);
     const fontVariants = fontPaths.filter(el => fontRE.test(el));
 
@@ -40,7 +40,10 @@ async function loadFonts(fontName: string): Promise<fontResolveValue[]> {
         fonts.push({
           font,
           basename,
-          variant: (basename.split('-')[0] ||  '').replace(/[_]/g, ' '),
+          variant: basename
+            .split('.')[0] // cleanup extension
+            .replace(/[_]/g, ' ') // undo snake case (get-google-fonts)
+          ,
         });
 
         if (fonts.length === fontVariants.length) {
@@ -75,4 +78,4 @@ async function loadFonts(fontName: string): Promise<fontResolveValue[]> {
 
     await writeFile(svgFileName, svgFileContents);
   });
-})('Noto Serif JP');
+})('Roboto');
