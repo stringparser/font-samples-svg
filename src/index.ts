@@ -75,4 +75,4 @@ async function loadFonts(fontName: string): Promise<fontResolveValue[]> {
 
     await writeFile(svgFileName, svgFileContents);
   });
-})('Roboto');
+})('Noto Serif JP');
